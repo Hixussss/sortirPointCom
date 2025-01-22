@@ -652,7 +652,7 @@ class EventController extends AbstractController
         }, $events);
     
         return $this->json([
-            'user' => $user->getUsername(),
+            //'user' => $user->getUsername(),
             'events' => $data,
         ]);
     }
