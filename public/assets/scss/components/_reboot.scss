@@ -1,0 +1,31 @@
+/*
+Template Name: Opixo - Tailwind CSS Multipurpose Landing Page Template
+Version: 1.0
+Author: coderthemes
+Email: support@coderthemes.com
+File: _reboot.scss
+*/
+
+// Nunito (Google Fonts)
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
+
+// Maven (Google Fonts)
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800&display=swap');
+
+html {
+    @apply relative scroll-smooth;
+}
+
+body {
+    @apply font-nunito overflow-x-hidden text-gray-500;
+    font-size: 15px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+p {
+    @apply font-maven;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    @apply font-semibold font-nunito;
+}

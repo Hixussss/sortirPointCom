@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'create_group_title'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="py-12 mt-8">
+        <div class="container mx-auto max-w-4xl">
+            <div class="bg-white shadow-lg rounded-lg p-8">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ 'create_group_heading'|trans }}</h1>
+                {{ form_start(groupForm, { 'attr': { 'class': 'space-y-6' } }) }}
+                {{ form_errors(groupForm) }}
+
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- Name -->
+                        <div>
+                            {{ form_label(groupForm.name) }}
+                            {{ form_widget(groupForm.name) }}
+                        </div>
+
+                        <!-- Max Registrations -->
+                        {{ form_row(groupForm.maxUsers) }}
+
+                        <!-- Description -->
+                        {{ form_row(groupForm.description) }}
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <div>
+                            {{ form_row(groupForm.isPrivate, {
+                            'label': 'form.is_private'|trans,
+                            'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' }
+                        }) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-between mt-6">
+                    <a href="{{ path('groups') }}" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                        {{ 'buttons.cancel'|trans }}
+                    </a>
+                    <button type="submit" class="px-6 py-2 text-white rounded-lg hover:bg-blue-600" style="background-color:cornflowerblue">
+                        {{ 'buttons.create'|trans }}
+                    </button>
+                </div>
+                {{ form_end(groupForm) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+

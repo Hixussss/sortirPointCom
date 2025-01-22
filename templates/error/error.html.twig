@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Erreur !</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Erreur" name="description" />
+    <meta content="VotreNom" name="author" />
+
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+
+    <!-- style css -->
+    <link href="{{ asset('assets/css/style.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/libs/@iconscout/unicons/css/line.css') }}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<section 
+    class="relative p-3 md:p-6 lg:h-screen flex items-center bg-right-bottom bg-no-repeat bg-cover" 
+    style="background-image: url('{{ asset('assets/images/small/small-6.jpg') }}');">
+
+        <div class="absolute inset-0 w-full h-full bg-black/50"></div>
+        <div class="container">
+            <div class="backdrop-blur-2xl bg-black/40 rounded-2xl">
+                <div class="grid lg:grid-cols-2 items-center">
+                    <!-- Left Side -->
+                    <div class="p-10 text-white relative text-center lg:text-start">
+                        <a href="{{ path('home') }}" class="flex items-center justify-center lg:justify-start mb-10">
+                            <img src="{{ asset('assets/images/logo-sm.png') }}" alt="Logo" class="h-16">
+                        </a>
+                        <div class="max-w-xl">
+                            <h2 class="text-4xl font-bold capitalize mb-4">Erreur !</h2>
+                            <p class="text-base font-medium text-gray-300">
+                                Une erreur inattendue est survenue.
+                            </p>
+                        </div>
+
+                        <div class="mt-10">
+                            <a href="{{ path('home') }}" class="py-2 px-6 text-white font-semibold text-sm rounded-md backdrop-blur-2xl bg-white/10 hover:bg-primary/20 hover:text-primary transition-all duration-500">
+                                Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right Side (Optional Illustration or Timer) -->
+                    <div class="h-full w-full hidden lg:flex items-center justify-center">
+                        <img src="{{ asset('assets/images/error-symbol.png') }}" alt="Error Illustration" class="w-50 h-50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="fixed bottom-0 start-0 end-0 py-3">
+        <div class="container">
+            <p class="text-base font-medium text-center text-gray-400">
+                <script>document.write(new Date().getFullYear())</script>
+                © SortirPointCom - Tous droits réservés.
+            </p>
+        </div>
+    </footer>
+
+    <script src="{{ asset('assets/libs/preline/preline.js') }}"></script>
+</body>
+
+</html>

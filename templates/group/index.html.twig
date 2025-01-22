@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ 'manage_groups_title'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="py-20 mt-8">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-10">{{ 'manage_groups_heading'|trans }}</h1>
+            <a href="{{ path('group_new') }}"
+            class="inline-block px-6 py-3 bg-green-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transition-all">
+                {{ 'add_group_button'|trans }}
+            </a>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for group in groups %}
+                    {% if group.isPrivate == false or user in group.users %}
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col h-full">
+                        <!-- User Information -->
+                        <div class="p-6 flex flex-col justify-between h-full">
+                            <div class="flex items-center mb-4">
+                                <div>
+                                    <h2 class="text-lg font-bold text-gray-800">{{ group.name }}</h2>
+                                    <p class="text-sm text-gray-500">{{ group.description }}</p>
+                                    <p class="text-sm text-gray-500">{{ group.site.name }}</p>
+                                    <p class="text-sm text-gray-500">{{ group.users | length }}/{{ group.maxUsers }}</p>
+                                    <p class="text-sm text-gray-500">{{ group.owner.firstName}} {{ group.owner.lastName }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <a href="{{ path('group_show', {'id': group.id}) }}"
+                               class="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                                {{ 'view_group_profile_button'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Application{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/admin/css/chart.css') }}">
+{% endblock %}
+
+{% block body %}
+<section id="admin-application" class="py-20 bg-gray-100">
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-10">Application Management</h1>
+
+        <!-- Worker Management -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold mb-4">Worker Management</h2>
+            <div class="flex items-center justify-between">
+                <button id="startWorker" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
+                    Start Worker
+                </button>
+                <button id="stopWorker" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition">
+                    Stop Worker
+                </button>
+                <p class="text-gray-700">
+                    <strong>Status:</strong>
+                    <span id="workerStatus">
+                        {{ workerRunning ? 'Running' : 'Stopped' }}
+                    </span>
+                </p>
+            </div>
+            <p class="mt-4 text-gray-700">
+                <strong>Remaining Tasks:</strong> {{ remainingTasks }}
+            </p>
+        </div>
+
+        <!-- System Stats -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-bold mb-4">System Statistics</h2>
+            <ul>
+                <li><strong>Memory Usage:</strong> {{ systemStats.memoryUsage }} MB</li>
+                <li><strong>CPU Load:</strong> {{ systemStats.cpuLoad }}%</li>
+                <li><strong>Disk Usage:</strong> {{ systemStats.diskUsage }}%</li>
+            </ul>
+        </div>
+
+        <!-- Graphs Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Users Graph -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Users Over Time</h2>
+                <canvas id="usersChart"></canvas>
+            </div>
+            <!-- Events Graph -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">Events Over Time</h2>
+                <canvas id="eventsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const usersData = {{ usersData|json_encode|raw }};
+    const eventsData = {{ eventsData|json_encode|raw }};
+
+    // Users Chart
+    const ctxUsers = document.getElementById('usersChart').getContext('2d');
+    const usersChart = new Chart(ctxUsers, {
+        type: 'line',
+        data: {
+            labels: usersData.labels,
+            datasets: [{
+                label: 'Users',
+                data: usersData.values,
+                borderColor: '#4F46E5',
+                tension: 0.4,
+            }]
+        }
+    });
+
+    // Events Chart
+    const ctxEvents = document.getElementById('eventsChart').getContext('2d');
+    const eventsChart = new Chart(ctxEvents, {
+        type: 'line',
+        data: {
+            labels: eventsData.labels,
+            datasets: [{
+                label: 'Events',
+                data: eventsData.values,
+                borderColor: '#10B981',
+                tension: 0.4,
+            }]
+        }
+    });
+
+    // Mettre à jour l'état du worker dynamiquement
+    function updateWorkerStatus() {
+        fetch('{{ path('worker_status') }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('workerStatus').textContent = data.workerRunning ? 'Running' : 'Stopped';
+                document.querySelector('p strong:last-of-type').textContent = data.remainingTasks;
+            });
+    }
+
+    // Contrôles pour démarrer/arrêter le worker
+    document.getElementById('startWorker').addEventListener('click', () => {
+        fetch('{{ path('start_worker') }}', { method: 'POST' })
+            .then(() => updateWorkerStatus());
+    });
+
+    document.getElementById('stopWorker').addEventListener('click', () => {
+        fetch('{{ path('stop_worker') }}', { method: 'POST' })
+            .then(() => updateWorkerStatus());
+    });
+
+    // Rafraîchir périodiquement l'état du worker
+    setInterval(updateWorkerStatus, 5000);
+</script>
+{% endblock %}

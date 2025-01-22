@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{{ block('title') }} - SortirPointCom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Landing page moderne pour des activités et événements." name="description" />
+    <meta content="Hixus" name="author" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Lobster&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}">
+
+    <!-- Style CSS -->
+    <link href="{{ asset('build/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style.min.css') }}" rel="stylesheet">
+    <link href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/daygrid.global.min.css" rel="stylesheet">
+
+
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/daygrid.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/interaction.global.min.js"></script>
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/libgif/0.2.0/libgif.min.js"></script>
+
+
+
+    <!-- Unicons Icons CSS -->
+    <link href="{{ asset('assets/libs/@iconscout/unicons/css/line.css') }}" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="text-slate-700 tracking-wide">
+<div class="min-h-screen flex flex-col">
+<main class="flex-grow">
+
+    <div class="flashphp fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-4xl space-y-4">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="px-4 py-3 rounded-lg shadow-lg text-white text-sm
+                    {% if label == 'success' %}bg-green-500{% elseif label == 'error' %}bg-red-500{% elseif label == 'info' %}bg-blue-500{% else %}bg-gray-500{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# Include the header partial #}
+    {% include 'partials/header.html.twig' %}
+
+        {% block body %}{% endblock %}
+
+    {# Include the footer partial #}
+ </main>
+    {% include 'partials/footer.html.twig' %}
+
+    
+    <script src="{{ asset('assets/libs/preline/preline.js') }}"></script>
+    <script src="{{ asset('assets/libs/lucide/umd/lucide.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/gumshoejs/gumshoe.polyfills.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/gumshoejs/gumshoe.min.js') }}"></script>
+    <script src="{{ asset('assets/js/theme.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashMessages = document.querySelectorAll('.flashphp div');
+            flashMessages.forEach((message) => {
+                setTimeout(() => {
+                    message.classList.add('opacity-0', 'transition', 'duration-1000');
+                    setTimeout(() => message.remove(), 1000); // Retire le message après la transition
+                }, 4000); // Le message reste visible pendant 4 secondes
+            });
+        });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const themeToggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+        const themeIcon = document.getElementById('theme-toggle-icon');
+
+        // Initialiser le mode depuis le localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            root.classList.add('dark');
+            themeIcon.innerHTML = '<i class="uil uil-moon"></i>';
+        } else {
+            themeIcon.innerHTML = '<i class="uil uil-sun"></i>';
+        }
+
+        // Ajouter l'événement click
+        themeToggle.addEventListener('click', () => {
+            if (root.classList.contains('dark')) {
+                root.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.innerHTML = '<i class="uil uil-sun"></i>';
+            } else {
+                root.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.innerHTML = '<i class="uil uil-moon"></i>';
+            }
+        });
+    });
+    </script>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

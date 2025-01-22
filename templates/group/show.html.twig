@@ -1,0 +1,399 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ group.name }}'s {{ 'group_profile_title'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="py-16 mt-16 bg-gray-50">
+        <div class="container mx-auto max-w-4xl">
+            <!-- Profile Card -->
+                    <div class="mb-4">
+            <a href="{{ path('groups') }}" class="flex items-center text-blue-600 hover:underline transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                {{ 'back_button'|trans }}
+            </a>
+        </div>
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <!-- Header Section -->
+                {% if group.banner %}
+                <div class="p-8 text-center text-white bg-cover bg-center" style="background-image: url('{{ asset('images/banners/' ~ group.banner) }}');">
+                {% else %}
+                <div class="p-8 text-center text-white bg-blue-600">
+                {% endif %}
+                    <h1 class="text-3xl font-bold mt-4">{{ group.name }}</h1>
+                    <p class="text-sm mt-1">{{ group.description }}</p>
+                </div>
+
+                <!-- Details Section -->
+                <div class="p-8 grid md:grid-cols-2 gap-8">
+                    <!-- Personal Information -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ 'group_information_title'|trans }}</h2>
+                        <ul class="space-y-3">
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'group_name_label'|trans }}:</span>
+                                <span class="text-gray-800">{{ group.name | default('not_provided'|trans) }}</span>
+                            </li>
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'group_description_label'|trans }}:</span>
+                                <span class="text-gray-800">{{ group.description | default('not_provided'|trans) }}</span>
+                            </li>
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'is_Private_label'|trans }}:</span>
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        {% if group.private %}checked{% endif %}
+                                        disabled
+                                >
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ 'group_additional_information_title'|trans }}</h2>
+                        <ul class="space-y-3">
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'site_label'|trans }}:</span>
+                                <span class="text-gray-800">{{ group.site | default('not_provided'|trans) }}</span>
+                            </li>
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'owner_label'|trans }}:</span>
+                                <span class="text-gray-800">{{ group.owner.firstName}} {{ group.owner.lastName }}</span>
+                            </li>
+                            <li>
+                                <span class="font-medium text-gray-600">{{ 'event_card.participants'|trans }}:</span>
+                                <span class="text-gray-800">{{ group.users | length }}/{{ group.maxUsers }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between mt-6">
+                        <!-- Modifier Button -->
+                <a href="{{ path('group_edit', {'id': group.id }) }}"
+                class="inline-block px-6 py-2 bg-yellow-500 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-yellow-600 hover:shadow-lg transition-all">
+                    {{ 'edit_button'|trans }}
+                </a>
+
+                {% if group.isPrivate == false %}
+                    {% if user in group.users %}
+                        <!-- Quitter Button -->
+                        <a href="{{ path('group_leave', {'id': group.id }) }}"
+                        class="inline-block px-6 py-2 bg-red-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-red-700 hover:shadow-lg transition-all"
+                        onclick="return confirm('{{ 'leave_confirmation'|trans }}');">
+                            {{ 'leave_button'|trans }}
+                        </a>
+                    {% else %}
+                        {% if group.users | length < group.maxUsers %}
+                        <!-- Rejoindre Button -->
+                        <a href="{{ path('group_join', {'id': group.id }) }}"
+                        class="inline-block px-6 py-2 bg-green-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transition-all">
+                            {{ 'join_button'|trans }}
+                        </a>
+                        {% else %}
+                        <p class="text-red-500 text-sm font-semibold">{{ 'group_full'|trans }}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if group.isPrivate == true %}
+                    {% if user == group.owner %}
+                    <!-- Invite user Button -->
+                    <a href="{{ path('group_invite', {'id': group.id }) }}"
+                    class="inline-block px-6 py-2 bg-blue-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all">
+                        {{ 'invite_button'|trans }}
+                    </a>
+                    {% endif %}
+                    {% if user in group.users %}
+                        {% if user != group.owner %}
+                            <!-- Quitter Button -->
+                            <a href="{{ path('group_leave', {'id': group.id }) }}"
+                            class="inline-block px-6 py-2 bg-red-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-red-700 hover:shadow-lg transition-all"
+                            onclick="return confirm('{{ 'leave_confirmation'|trans }}');">
+                                {{ 'leave_button'|trans }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                <!-- Supprimer Button -->
+                {% if user == group.owner %}
+                <a href="{{ path('group_delete', {'id': group.id }) }}"
+                class="inline-block px-6 py-2 bg-red-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-red-700 hover:shadow-lg transition-all"
+                onclick="return confirm('{{ 'delete_confirmation'|trans }}');">
+                    {{ 'delete_button'|trans }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div id="chatbot-container">
+    <!-- Floating Button -->
+    {% if user in group.users %}
+    <button id="chatbot-toggle" class="fixed bottom-14 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-all">
+        💬
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbot-modal" class="fixed bottom-16 right-6 w-96 h-[32rem] bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+            <h3 class="text-lg font-bold">ChatBox</h3>
+            <button id="chatbot-close" class="text-white text-xl">✖</button>
+        </div>
+
+        <!-- Chat Content -->
+        <div class="flex flex-col h-full">
+            <div id="chat-box" class="flex-1 overflow-y-scroll p-4 bg-gray-100 dark:bg-gray-900">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="p-4 flex space-x-2 items-center">
+                <input id="chat-message" type="text" placeholder="Type a message" 
+                       class="flex-1 p-2 border border-gray-300 rounded-md break-words" />
+                <button id="emoji-picker-btn" class="bg-gray-300 p-2 rounded-md">😊</button>
+                <emoji-picker id="emoji-picker" style="display: none; position: absolute; bottom: 50px; left: 10px;"></emoji-picker>
+                <button id="send-message" class="bg-blue-600 text-white px-4 py-2 rounded-md">Send</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</section>
+{% endblock %}
+
+
+{% block stylesheets %}
+{% if user in group.users %}
+<style>
+    #chatbot-toggle {
+        z-index: 1000;
+    }
+    #chatbot-modal {
+        z-index: 1000;
+    }
+    #chat-box {
+        max-height: calc(100% - 120px);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    #chat-message {
+        min-height: 2.5rem; /* Ensure proper height for the input */
+    }
+</style>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if user in group.users %}
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script>
+<script>
+    const websocketServer = '{{ websocket_server }}';
+    const authToken = '{{ auth_token }}';
+    const avatar = '{{ user.profilePicture ? asset(user.profilePicture) : asset("assets/images/defaut-profil.png") }}';
+    const userId = '{{ user.username }}';
+    const emojiPicker = document.getElementById('emoji-picker');
+    let ws = null;
+    const chatBox = document.getElementById('chat-box');
+    const chatMessageInput = document.getElementById('chat-message');
+    const emojiPickerBtn = document.getElementById('emoji-picker-btn');
+
+    // Toggle chatbot modal
+    const chatbotToggle = document.getElementById('chatbot-toggle');
+    const chatbotModal = document.getElementById('chatbot-modal');
+    const chatbotClose = document.getElementById('chatbot-close');
+
+    chatbotToggle.addEventListener('click', () => {
+        chatbotModal.classList.toggle('hidden');
+    });
+
+    chatbotClose.addEventListener('click', () => {
+        chatbotModal.classList.add('hidden');
+    });
+
+    // WebSocket connection
+    function connectWebSocket() {
+        ws = new WebSocket(`${websocketServer}?token=${authToken}`);
+
+        ws.onopen = () => {
+            console.log('Connected to WebSocket server');
+            // Automatically join group 1
+            ws.send(JSON.stringify({ type: 'join', groupId: {{ group_id }} }));
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'history') {
+                data.messages.forEach((message) => displayMessage(message, message.sender === userId));
+            } else if (data.type === 'message') {
+                displayMessage(data, data.sender === userId);
+            }
+        };
+
+        ws.onclose = () => console.log('Disconnected from WebSocket server');
+        ws.onerror = (error) => console.error('WebSocket error:', error);
+    }
+
+    connectWebSocket();
+
+    // Send message
+    document.getElementById('send-message').addEventListener('click', sendMessage);
+
+    chatMessageInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const message = chatMessageInput.value;
+        if (message.trim()) {
+            ws.send(JSON.stringify({
+                type: 'message',
+                groupId: {{ group_id }},
+                message,
+                sender: userId,
+                avatar,
+            }));
+            chatMessageInput.value = '';
+        }
+    }
+
+    // Display message
+    function displayMessage(message, isOwnMessage) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chat-message');
+        messageElement.style.display = 'flex';
+        messageElement.style.justifyContent = isOwnMessage ? 'flex-end' : 'flex-start';
+        messageElement.style.marginBottom = '10px';
+
+        const avatarElement = document.createElement('img');
+        avatarElement.src = message.avatar;
+        avatarElement.alt = `${message.sender}'s avatar`;
+        avatarElement.style.width = '40px';
+        avatarElement.style.height = '40px';
+        avatarElement.style.borderRadius = '50%';
+        avatarElement.style.marginRight = isOwnMessage ? '0' : '10px';
+        avatarElement.style.marginLeft = isOwnMessage ? '10px' : '0';
+
+        const messageContent = document.createElement('div');
+        messageContent.style.maxWidth = '70%';
+        messageContent.style.padding = '10px';
+        messageContent.style.borderRadius = '10px';
+        messageContent.style.backgroundColor = isOwnMessage ? '#d1e7dd' : '#f8d7da';
+        messageContent.style.color = isOwnMessage ? '#0f5132' : '#842029';
+
+        const linkRegex = /\/event\/show\/(\d+)/;
+        const matchShare = message.message.match(linkRegex);
+
+        const linkProfilRegex = /\/profile\/(\d+)/;
+        const matchProfil = message.message.match(linkProfilRegex);
+
+        const isGif = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(message.message);
+
+        //const containFeur = /feur/i.test(message.message);
+        const containFeur = false;
+
+        if (isGif) {
+            const gifElement = document.createElement('img');
+            gifElement.src = message.message;
+            gifElement.alt = 'GIF';
+            gifElement.style.maxWidth = '100%';
+            gifElement.style.borderRadius = '10px';
+            messageContent.appendChild(gifElement);
+        }
+        else if (matchShare) {
+            const eventId = matchShare[1];
+            fetch(`/api/event-details/${eventId}`)
+                .then((response) => response.json())
+                .then((eventDetails) => {
+                    if (eventDetails.error) {
+                        messageContent.innerHTML = `
+                            <div class="max-w-sm mx-auto bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg shadow-md">
+                                <p>Invalid event link</p>
+                            </div>`;
+                    } else {
+                        messageContent.innerHTML = `
+                            <div class="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+                                <div class="p-4">
+                                    <h2 class="text-xl font-bold text-gray-800">${eventDetails.title}</h2>
+                                    <p class="text-gray-600 mt-2">${eventDetails.description}</p>
+                                    <a href="/event/show/${eventId}" target="_blank" 
+                                        class="mt-4 inline-flex items-center justify-center px-4 py-2 w-full text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all">
+                                        View Event
+                                    </a>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-2 text-sm text-gray-500 text-right">
+                                    Partagé à ${new Date(message.timestamp).toLocaleTimeString()}
+                                </div>
+                            </div>`;
+                    }
+                });
+        } else if(matchProfil) {
+            const profilId = matchProfil[1];
+            fetch(`/api/profile-details/${profilId}`)
+                .then((response) => response.json())
+                .then((profilDetails) => {
+                    if (profilDetails.error) {
+                        messageContent.innerHTML = `
+                            <div class="max-w-sm mx-auto bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg shadow-md">
+                                <p>Invalid user link</p>
+                            </div>`;
+                    } else {
+                        messageContent.innerHTML = `
+                            <div class="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+                                <div class="p-4">
+                                    <h2 class="text-xl font-bold text-gray-800">${message.sender} Partage avec vous un profil !</h2>
+                                    <div class="mt-2">
+                                        <p class="text-lg font-semibold text-blue-600">${profilDetails.username}</p>
+                                        <p class="text-gray-600">${profilDetails.firstname} ${profilDetails.lastname}</p>
+                                    </div>
+                                    <a href="/profile/${profilId}" target="_blank" 
+                                        class="mt-4 inline-flex items-center justify-center px-4 py-2 w-full text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all">
+                                        View Profile
+                                    </a>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-2 text-sm text-gray-500 text-right">
+                                    Partagé à ${new Date(message.timestamp).toLocaleTimeString()}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+        }
+        else if(containFeur) {
+            const gifElement = document.createElement('img');
+            gifElement.src = "https://media.tenor.com/zvg8w0FkecYAAAAM/feur-theobabac.gif";
+            gifElement.alt = 'FEUR';
+            gifElement.style.maxWidth = '100%';
+            gifElement.style.borderRadius = '10px';
+            messageContent.appendChild(gifElement);
+        } 
+         else {
+            messageContent.innerHTML = `
+                <strong>${message.sender}</strong><br>${message.message}
+                <small style="display: block; color: gray;">${new Date(message.timestamp).toLocaleTimeString()}</small>
+            `;
+        }
+
+        messageElement.appendChild(isOwnMessage ? messageContent : avatarElement);
+        messageElement.appendChild(isOwnMessage ? avatarElement : messageContent);
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    emojiPickerBtn.addEventListener('click', () => {
+        emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Add emoji to the message input
+    emojiPicker.addEventListener('emoji-click', (event) => {
+        chatMessageInput.value += event.detail.unicode;
+        chatMessageInput.focus(); // Bring focus back to the input field
+    });
+
+</script>
+{% endif %}
+{% endblock %}

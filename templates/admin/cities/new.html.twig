@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Add New City'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-10">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold mb-8">{{ 'Add New City'|trans }}</h1>
+
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+        <div class="bg-white shadow-md rounded-lg p-6">
+            {{ form_row(form.name, {'label': 'Name'}) }}
+            {{ form_row(form.postalCode, {'label': 'Postal Code'}) }}
+
+            <div class="mt-4">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                    {{ 'Save'|trans }}
+                </button>
+                <a href="{{ path('admin_cities_index') }}" 
+                   class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-all">
+                    {{ 'Cancel'|trans }}
+                </a>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</section>
+{% endblock %}

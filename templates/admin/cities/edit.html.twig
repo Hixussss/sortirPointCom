@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Edit City'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="py-10">
+        <div class="container mx-auto">
+            <div class="container mx-auto">
+                <h1 class="text-3xl font-bold mb-8">{{ 'Edit City'|trans }}</h1>
+
+                {{ form_start(form) }}
+                <div class="mb-4">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_label(form.postalCode) }}
+                    {{ form_widget(form.postalCode) }}
+                    {{ form_errors(form.postalCode) }}
+                </div>
+                <div class="mb-4">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                        {{ 'Save'|trans }}
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Manage Cities'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-10">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold mb-8">{{ 'Manage Cities'|trans }}</h1>
+        
+        <div class="mb-4">
+            <a href="{{ path('admin_cities_new') }}" 
+               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
+                {{ 'Add New City'|trans }}
+            </a>
+        </div>
+
+        <table class="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
+            <thead>
+                <tr class="bg-gray-100 text-gray-700">
+                    <th class="px-4 py-2">{{ 'ID'|trans }}</th>
+                    <th class="px-4 py-2">{{ 'Name'|trans }}</th>
+                    <th class="px-4 py-2">{{ 'Postal Code'|trans }}</th>
+                    <th class="px-4 py-2">{{ 'Actions'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for city in cities %}
+                    <tr class="border-b border-gray-200">
+                        <td class="px-4 py-2">{{ city.id }}</td>
+                        <td class="px-4 py-2">{{ city.name }}</td>
+                        <td class="px-4 py-2">{{ city.postalCode }}</td>
+                        <td class="px-4 py-2 flex space-x-2">
+                            <a href="{{ path('admin_cities_edit', {id: city.id}) }}"
+                               class="p-1 bg-blue-500 text-white rounded-lg hover:underline">{{ 'Edit'|trans }}</a>
+                            <form method="post" action="{{ path('admin_cities_delete', {id: city.id}) }}" onsubmit="return confirm('{{ 'Are you sure?'|trans }}');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ city.id) }}">
+                                <button type="submit" class="p-1 bg-red-600 text-white rounded-lg hover:underline">{{ 'Delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-gray-500 py-4">{{ 'No cities found.'|trans }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

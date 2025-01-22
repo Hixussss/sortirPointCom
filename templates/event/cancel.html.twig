@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'event_cancellation_title'|trans({'event.name': event.name}) }}{% endblock %}
+
+{% block body %}
+    <div class="max-w-lg mx-auto mt-20 bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-4">{{ 'cancel_event_heading'|trans({'event.name': event.name}) }}</h1>
+        <p class="text-gray-600 mb-6">
+            {{ 'cancellation_instructions'|trans }}
+        </p>
+        
+        {{ form_start(cancelForm) }}
+        {{ form_errors(cancelForm) }}
+        <div class="mb-4">
+            {{ form_label(cancelForm.cancellationMotive, 'cancellation_reason_label'|trans, { 'label_attr': {'class': 'block text-sm font-medium text-gray-700'} }) }}
+            {{ form_widget(cancelForm.cancellationMotive, { 'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500'} }) }}
+            {{ form_errors(cancelForm.cancellationMotive) }}
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 transition">
+                {{ 'confirm_cancellation_button'|trans }}
+            </button>
+            <a href="{{ path('app_event_list') }}" class="text-gray-600 hover:text-gray-800 underline">
+                {{ 'do_not_cancel_link'|trans }}
+            </a>
+        </div>
+        {{ form_end(cancelForm) }}
+    </div>
+{% endblock %}

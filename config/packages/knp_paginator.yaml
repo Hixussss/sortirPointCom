@@ -1,0 +1,8 @@
+knp_paginator:
+    page_range: 5            # Nombre de pages affichées autour de la page actuelle
+    default_options:
+        page_name: page       # Nom du paramètre pour la pagination
+        sort_field_name: sort # Nom du paramètre pour le tri
+        sort_direction_name: direction # Nom du paramètre pour la direction du tri
+    template:
+        pagination: '@KnpPaginator/Pagination/tailwindcss_pagination.html.twig'

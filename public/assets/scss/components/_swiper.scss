@@ -1,0 +1,58 @@
+/*
+Template Name: Opixo - Tailwind CSS Multipurpose Landing Page Template
+Version: 1.0
+Author: coderthemes
+Email: support@coderthemes.com
+File: _swiper.scss
+*/
+
+.swiper-slide {
+    height: 100%;
+    width: 100%;
+}
+
+.swiper-1 {
+    height: 450px;
+    width: auto;
+}
+
+.swiper-pagination-bullets-dynamic {
+    @apply py-1;
+}
+
+.feedback-swiper {
+    .swiper-pagination {
+        .swiper-pagination-bullet {
+            @apply h-1.5 w-4 bg-neutral-500 rounded-sm;
+            
+            &.swiper-pagination-bullet-active {
+                @apply ring-2 ring-offset-2 bg-primary ring-primary;
+            }
+        }
+    }
+}
+
+
+#testimonial_directory {
+    .swiper-slide {
+        position: relative;
+        transition: all 0.3s ease-in-out;
+
+        &.swiper-slide-active {
+            @apply w-auto h-[60%] transition-all duration-700;
+            box-shadow: 0 7px 14px 0 rgba(52, 58, 64, .06);
+        }
+    }
+}
+
+.auth-swiper {
+    .swiper-pagination {
+        .swiper-pagination-bullet {
+            @apply h-1.5 w-4 bg-white opacity-50 rounded-sm;
+            
+            &.swiper-pagination-bullet-active {
+                @apply ring-2 ring-offset-2 ring-offset-black bg-primary ring-primary;
+            }
+        }
+    }
+}

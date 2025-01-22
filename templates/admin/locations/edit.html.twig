@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Edit Location'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="py-10">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold mb-8">{{ 'Manage Locations'|trans }}</h1>
+            <div class="container mx-auto">
+                <h1 class="text-3xl font-bold mb-8">{{ 'Edit Location'|trans }}</h1>
+
+                {{ form_start(form) }}
+                <div class="mb-4">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_label(form.latitude) }}
+                    {{ form_widget(form.latitude) }}
+                    {{ form_errors(form.latitude) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_label(form.longitude) }}
+                    {{ form_widget(form.longitude) }}
+                    {{ form_errors(form.longitude) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_label(form.street) }}
+                    {{ form_widget(form.street) }}
+                    {{ form_errors(form.street) }}
+                </div>
+                <div class="mb-4">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                        {{ 'Save'|trans }}
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

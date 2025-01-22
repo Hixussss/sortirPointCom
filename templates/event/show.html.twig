@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{  event.name }} {% endblock %}
+
+{% block body %}
+    <section class="py-12 mt-12">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">{{ event.name }}</h1>
+                <p class="text-sm text-gray-500 mt-2">
+                    {{ 'organized_by'|trans }} 
+                    <a href="{{ path('app_profile_view', { id: event.organizer.id }) }}" class="font-semibold text-primary hover:underline">
+                        {{ event.organizer.username }}
+                    </a>
+                </p>
+        </div>
+        <div class="container mx-auto max-w-4xl">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <button 
+                onclick="history.back()" 
+                class="flex items-center text-primary font-medium underline hover:text-primary/80 transition-all"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                {{ 'back_button'|trans }}
+            </button>
+        </div>
+
+
+            <!-- Event Card -->
+            <div class="bg-white shadow-lg rounded-lg p-6 grid md:grid-cols-2 gap-8">
+                <!-- Top Left: Event Details -->
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ 'event_details'|trans }}</h2>
+                    <ul class="space-y-3">
+                    <li>
+                        <span class="font-semibold text-gray-800">{{ 'state'|trans }}:</span>
+                        <span class="px-2 py-1 rounded-md text-white font-semibold"
+                            style="background-color:
+                                {% if event.state.label == 'CREATION' %}#4caf50
+                                {% elseif event.state.label == 'REGISTRATION OPEN' %}#2196f3
+                                {% elseif event.state.label == 'REGISTRATION CLOSED' %}#ff9800
+                                {% elseif event.state.label == 'ONGOING' %}#ffeb3b
+                                {% elseif event.state.label == 'CANCELED' %}#f44336
+                                {% elseif event.state.label == 'FINISHED' %}#9c27b0
+                                {% elseif event.state.label == 'ARCHIVED' %}#607d8b
+                                {% else %}#6c757d
+                                {% endif %};">
+                            {{ event.state.label|trans }}
+                        </span>
+                    </li>
+                        <li>
+                            <span class="font-semibold text-gray-800">{{ 'starting_date'|trans }}:</span>
+                            {{ event.startDate|date('d M Y H:i') }}
+                        </li>
+                        <li>
+                            <span class="font-semibold text-gray-800">{{ 'form.duration_minutes'|trans }}:</span>
+                            {{ event.duration }} {{ 'minutes'|trans }}
+                        </li>
+                        <li>
+                            <span class="font-semibold text-gray-800">{{ 'registration_limit_date'|trans }}:</span>
+                            {{ event.registrationEndDate|date('d M Y H:i') }}
+                        </li>
+                        <li>
+                            <span class="font-semibold text-gray-800">{{ 'max_participants'|trans }}:</span>
+                            {{ event.maxRegistrations }}
+                        </li>
+                    </ul>
+
+                    <!-- Participants -->
+                    <div class="mt-6">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ 'show_participants'|trans }}</h3>
+                        <div class="bg-gray-100 p-4 rounded-lg max-h-24 overflow-y-auto">
+                            <ul class="space-y-2">
+                                {% for participant in event.participants %}
+                                    <li>
+                                        <a href="{{ path('app_profile_view', {'id': participant.id}) }}"
+                                           class="text-primary underline hover:text-primary/80">
+                                            {{ participant.username }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <p class="text-gray-500">{{ 'show_no_participants'|trans }}</p>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Right: Location -->
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ 'location_details'|trans }}</h2>
+                    <p class="text-gray-600">
+                        <span class="font-semibold">{{ 'name'|trans }}:</span> {{ event.location.name }} <p>
+                            <span class="font-semibold">{{ 'address'|trans }}:</span> {{ event.location.street }} <p>
+                            <span class="font-semibold">{{ 'city'|trans }}:</span> {{ event.location.city }} <p>
+                            <span class="font-semibold">{{ 'zip_code'|trans }}:</span> {{ event.location.city.postalCode     }} <p>
+                    </p>
+                    <div id="map" class="w-full h-64 mt-4 rounded-lg"></div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const map = L.map('map').setView([{{ event.location.latitude }}, {{ event.location.longitude }}], 14);
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                maxZoom: 19,
+                                attribution: '© OpenStreetMap contributors'
+                            }).addTo(map);
+                            L.marker([{{ event.location.latitude }}, {{ event.location.longitude }}]).addTo(map)
+                                .bindPopup("{{ event.location.name }}").openPopup();
+                        });
+                    </script>
+                </div>
+
+                <!-- Bottom Left: Description + Cancellation Motive-->
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ 'description'|trans }}</h2>
+                    <p class="text-gray-600">{{ event.description | default('no_description'|trans) }}</p>
+                    {% if event.state.label == 'CANCELED' %}
+                        <div class="mt-2">
+                            <h2 class="text-xl font-semibold text-red-700">{{ 'cancellation_motive'|trans }}</h2>
+                            <p class="text-gray-600">{{ event.cancellationMotive }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Bottom Right: Management -->
+                {% if event.state.label == 'CREATION' %}
+                    {% if app.user and app.user == event.organizer %}
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Management</h2>
+                            <div class="bg-gray-100 p-4 rounded-lg flex space-x-4">
+                                    <a href="{{ path('app_event_edit', {'id': event.id}) }}"
+                                       class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                       {{ 'edit_button'|trans }}
+                                    </a>
+                                    <a href="{{ path('app_event_publish', {'id': event.id}) }}"
+                                       class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                                       {{ 'publish_button'|trans }}
+                                    </a>
+                                    <a href="{{ path('app_event_delete', {'id': event.id}) }}"
+                                       class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                       {{ 'delete_button'|trans }}
+                                    </a>
+                   {% endif %}
+                {% elseif event.state.label == 'REGISTRATION OPEN' or event.state.label == 'REGISTRATION CLOSED' %}
+                    {% if app.user and app.user.admin == 1 or app.user and app.user == event.organizer %}
+                        <div>
+                            <a href="{{ path('app_event_cancel', {'id': event.id}) }}"
+                               class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                                {{ 'cancel_button'|trans }}
+                            </a>
+
+                    {% endif %}
+                    {% if app.user != event.organizer %}
+                            {% if not event.participants.contains(app.user) %}
+                                <a class="mx-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600" href="{{ path('app_event_join', {'id': event.id}) }}">
+                                    {{ 'join_button'|trans }}
+                                </a>
+                            {% elseif event.participants.contains(app.user) %}
+                                <a class="mx-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" href="{{ path('app_event_leave', {'id': event.id}) }}">
+                                    {{ 'leave_button'|trans }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+

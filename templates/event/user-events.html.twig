@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'your_events_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-12 mt-20">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">{{ 'your_events_heading'|trans }}</h1>
+        <div class="grid lg:grid-cols-2 grid-cols-1 gap-8">
+            <!-- Section des événements en création -->
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ 'events_in_creation'|trans }}</h2>
+                {% if creationEvents|length > 0 %}
+                    <ul class="space-y-4">
+                        {% for event in creationEvents %}
+                            <li>
+                                <a href="{{ path('app_event_show', {'id': event.id}) }}" 
+                                   class="block p-4 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded-lg shadow transition">
+                                    <span class="text-lg font-bold">{{ event.name }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-500">{{ 'no_events_creation'|trans }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Section des événements publiés -->
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">{{ 'published_events'|trans }}</h2>
+                {% if publishedEvents|length > 0 %}
+                    <ul class="space-y-4">
+                        {% for event in publishedEvents %}
+                            <li>
+                                <a href="{{ path('app_event_show', {'id': event.id}) }}" 
+                                   class="block p-4 bg-green-100 hover:bg-green-200 text-green-900 rounded-lg shadow transition">
+                                    <span class="text-lg font-bold">{{ event.name }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-500">{{ 'no_events_published'|trans }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

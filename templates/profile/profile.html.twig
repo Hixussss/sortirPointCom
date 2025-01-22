@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'profile_management_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-20 mt-8 bg-gray-50">
+    <div class="container mx-auto max-w-7xl">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Profile Details Card -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="p-6 flex flex-col items-center">
+                    <div class="relative">
+                        <img id="profile-preview" 
+                             src="{{ user.profilePicture ? asset(user.profilePicture) : asset('assets/images/defaut-profil.png') }}" 
+                             alt="{{ 'profile_picture_alt'|trans }}" 
+                             class="w-40 h-40 rounded-full shadow-md object-cover">
+                    </div>
+                </div>
+                <!-- Following and Followers Lists -->
+                <div class="p-6 border-t">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ 'following_list_title'|trans }}</h3>
+                    <ul class="space-y-2">
+                        {% for followed in user.following %}
+                            <li>
+                                <a href="{{ path('app_profile_view', {id: followed.id}) }}" 
+                                   class="text-blue-500 hover:underline">{{ followed.username }}</a>
+                            </li>
+                        {% else %}
+                            <li class="text-gray-500">{{ 'no_following'|trans }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-4">{{ 'followers_list_title'|trans }}</h3>
+                    <ul class="space-y-2">
+                        {% for follower in user.followers %}
+                            <li>
+                                <a href="{{ path('app_profile_view', {id: follower.id}) }}" 
+                                   class="text-blue-500 hover:underline">{{ follower.username }}</a>
+                            </li>
+                        {% else %}
+                            <li class="text-gray-500">{{ 'no_followers'|trans }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Profile Form Card -->
+            <div class="lg:col-span-2 bg-white shadow-lg rounded-lg">
+                <div class="p-8">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ 'manage_profile_heading'|trans }}</h1>
+                    {{ form_start(form, { 'attr': { 'class': 'space-y-6', 'enctype': 'multipart/form-data' } }) }}
+                    {{ form_errors(form) }}
+                    
+                    <!-- Profile Picture -->
+                    <div class="text-center mb-6">
+                        <label class="block mb-2 text-lg font-semibold text-gray-800">{{ 'form.profile_picture'|trans }}</label>
+                        {{ form_widget(form.profilePicture, { 'attr': { 'id': 'profile-picture-input', 'class': 'hidden' } }) }}
+                        <button type="button" 
+                                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all"
+                                onclick="document.getElementById('user_profilePicture').click()">
+                            {{ 'change_picture_button'|trans }}
+                        </button>
+                        <div id="crop-container" class="relative w-60 h-60 mx-auto mt-4 hidden">
+                            <img id="crop-image" class="max-w-full hidden">
+                            <canvas id="crop-canvas" class="hidden border border-gray-300 rounded-lg"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- First Name and Last Name -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        {{ form_row(form.firstName, { 'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } }) }}
+                        {{ form_row(form.lastName, { 'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } }) }}
+                    </div>
+
+                    <!-- Username and Email -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        {{ form_row(form.username, { 'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } }) }}
+                        {{ form_row(form.email, { 'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } }) }}
+                    </div>
+
+                    <!-- Phone Number and Birth Date -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        {{ form_row(form.phone, { 'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } }) }}
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Reset password button -->
+                        <a href="{{ path('app_profile') }}" class="text-blue-500 hover:underline">{{ 'reset_password_button'|trans }}</a>
+
+                    <!-- Save Changes Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all">
+                            {{ 'save_changes_button'|trans }}
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <script>
+        const profilePictureInput = document.getElementById('user_profilePicture');
+        const cropContainer = document.getElementById('crop-container');
+        const cropImage = document.getElementById('crop-image');
+        const cropCanvas = document.getElementById('crop-canvas');
+        const previewImage = document.getElementById('profile-preview');
+        let cropper;
+
+        /**
+         * Initialize the cropper for supported image formats.
+         * @param {string} imageSource - The image source (base64 or URL).
+         */
+        function initializeCropper(imageSource) {
+            cropImage.src = imageSource;
+            cropImage.classList.remove('hidden');
+            cropContainer.classList.remove('hidden');
+
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(cropImage, {
+                aspectRatio: 1,
+                viewMode: 2,
+                autoCropArea: 1,
+            });
+        }
+
+        /**
+         * Handle the upload and preview of an image.
+         * @param {File} file - The uploaded file.
+         */
+        function handleImageUpload(file) {
+            const fileType = file.type;
+
+            if (fileType === 'image/gif') {
+                handleGifUpload(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = () => initializeCropper(reader.result);
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /**
+         * Handle GIF uploads without cropping.
+         * @param {File} file - The uploaded GIF file.
+         */
+        function handleGifUpload(file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                previewImage.src = reader.result; // Display the GIF directly
+                cropImage.classList.add('hidden');
+                cropContainer.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * Submit the form with the cropped image if applicable.
+         * @param {Event} event - The form submission event.
+         */
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const file = profilePictureInput.files[0];
+            if (file && cropper) {
+                cropper.getCroppedCanvas({
+                    width: 300,
+                    height: 300,
+                }).toBlob((blob) => {
+                    const dataTransfer = new DataTransfer();
+                    const newFile = new File([blob], 'cropped-profile-picture.png', { type: 'image/png' });
+                    dataTransfer.items.add(newFile);
+                    profilePictureInput.files = dataTransfer.files;
+                    event.target.submit();
+                });
+            } else {
+                event.target.submit(); // Submit directly for GIFs or unsupported formats
+            }
+        }
+
+        // Event listeners
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        });
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', handleFormSubmit);
+    </script>
+{% endblock %}
+

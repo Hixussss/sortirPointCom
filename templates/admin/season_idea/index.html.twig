@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Season Ideas{% endblock %}
+
+{% block body %}
+<section class="py-12 bg-gray-100 dark:bg-gray-900 mt-16">
+    <div class="container mx-auto max-w-6xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Season Ideas</h1>
+            <a href="{{ path('admin_season_idea_new') }}"
+               class="px-6 py-2 bg-blue-600 text-white text-sm font-bold uppercase rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                Add New Idea
+            </a>
+        </div>
+
+        <!-- Ideas Grid -->
+        {% if seasonIdeas|length > 0 %}
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for idea in seasonIdeas %}
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+                        <!-- Image -->
+                        <img src="{{ asset(idea.imageUrl) }}" alt="{{ idea.title }}"
+                             class="w-full h-40 object-cover">
+                        <!-- Content -->
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">{{ idea.title }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{{ idea.description }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 italic">Season: {{ idea.season }}</p>
+                        </div>
+                        <!-- Actions -->
+                        <div class="flex justify-between items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                            <a href="{{ path('admin_season_idea_edit', { id: idea.id }) }}"
+                               class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded hover:bg-yellow-600">
+                                Edit
+                            </a>
+                            <form method="post" action="{{ path('admin_season_idea_delete', { id: idea.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ idea.id) }}">
+                                <button type="submit"
+                                        class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700"
+                                        onclick="return confirm('Are you sure you want to delete this idea?');">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- No Ideas Message -->
+            <div class="text-center py-10">
+                <p class="text-gray-500 dark:text-gray-300">No ideas available.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

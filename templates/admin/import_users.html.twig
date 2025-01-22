@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'import_users_title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-24 bg-white shadow-lg rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-4">{{ 'import_users_heading'|trans }}</h1>
+    <p class="text-gray-600 mb-6">{{ 'import_users_description'|trans }}</p>
+
+    {{ form_start(form, { 'attr': { 'class': 'space-y-4' } }) }}
+        <div class="mb-4">
+            {{ form_label(form.file, 'upload_csv_file'|trans, {'label_attr': {'class': 'block text-gray-700 font-semibold mb-2'}}) }}
+            {{ form_widget(form.file, { 'attr': { 'class': 'block w-full text-sm text-gray-500 border rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500' } }) }}
+            {{ form_errors(form.file) }}
+        </div>
+        <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+            {{ 'upload_button'|trans }}
+        </button>
+    {{ form_end(form) }}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mt-4 p-4 bg-{{ label == 'success' ? 'green' : 'red' }}-100 text-{{ label == 'success' ? 'green' : 'red' }}-700 rounded-lg">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <h2 class="text-xl font-semibold mt-8">{{ 'example_csv_structure'|trans }}</h2>
+    <p class="text-gray-600">{{ 'csv_instructions'|trans }}</p>
+
+    <div class="overflow-x-auto mt-4">
+        <table class="table-auto w-full border border-gray-300 text-sm text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border px-4 py-2">{{ 'username'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'email'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'first_name'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'last_name'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'password'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'phone'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'site'|trans }}</th>
+                    <th class="border px-4 py-2">{{ 'is_admin'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="border px-4 py-2">jdoe</td>
+                    <td class="border px-4 py-2">jdoe@example.com</td>
+                    <td class="border px-4 py-2">John</td>
+                    <td class="border px-4 py-2">Doe</td>
+                    <td class="border px-4 py-2">password123</td>
+                    <td class="border px-4 py-2">1234567890</td>
+                    <td class="border px-4 py-2">Main Office</td>
+                    <td class="border px-4 py-2 text-center font-semibold text-green-500">{{ 'yes'|trans }}</td>
+                </tr>
+                <tr>
+                    <td class="border px-4 py-2">asmith</td>
+                    <td class="border px-4 py-2">asmith@example.com</td>
+                    <td class="border px-4 py-2">Anna</td>
+                    <td class="border px-4 py-2">Smith</td>
+                    <td class="border px-4 py-2">mypassword</td>
+                    <td class="border px-4 py-2">0987654321</td>
+                    <td class="border px-4 py-2">Secondary Office</td>
+                    <td class="border px-4 py-2 text-center font-semibold text-red-500">{{ 'no'|trans }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

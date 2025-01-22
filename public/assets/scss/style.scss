@@ -1,0 +1,18 @@
+/*
+Template Name: Opixo - Tailwind CSS Multipurpose Landing Page Template
+Version: 1.0
+Author: coderthemes
+Email: support@coderthemes.com
+File: style.scss
+*/
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+// Custom
+@import "components/reboot";
+@import "components/navbar";
+@import "components/swiper";

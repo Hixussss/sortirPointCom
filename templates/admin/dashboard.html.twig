@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin_dashboard'|trans }}{% endblock %}
+
+{% block body %}
+<section id="admin-dashboard" class="py-20 bg-gradient-to-r from-indigo-600 to-blue-500 text-white mt-20">
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-10">{{ 'admin_dashboard'|trans }}</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Manage Users -->
+            <a href="{{ path('admin_users') }}" class="bg-white text-indigo-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-indigo-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-users-alt text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_users'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_users_desc'|trans }}</p>
+            </a>
+
+            <!-- Manage Events -->
+            <a href="{{ path('admin_events') }}" class="bg-white text-blue-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-blue-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-calendar-alt text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_events'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_events_desc'|trans }}</p>
+            </a>
+
+            <!-- Manage Cities -->
+            <a href="{{ path('admin_cities_index') }}" class="bg-white text-green-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-green-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-map-marker text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_cities'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_cities_desc'|trans }}</p>
+            </a>
+
+            <!-- Manage Locations -->
+            <a href="{{ path('admin_locations') }}" class="bg-white text-yellow-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-yellow-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-map-pin text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_locations'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_locations_desc'|trans }}</p>
+            </a>
+
+            <!-- Manage groups -->
+            <a href="{{ path('groups') }}" class="bg-white text-purple-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-purple-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-object-group text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_groups_heading'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_groups_desc'|trans }}</p>
+            </a>
+
+            <!-- Manage Index page -->
+            <a href="{{ path('admin_season_ideas_index') }}" class="bg-white text-red-600 rounded-lg shadow-lg hover:shadow-xl hover:bg-red-100 transition p-8 flex flex-col items-center justify-center">
+                <i class="uil uil-home text-6xl mb-4"></i>
+                <h2 class="text-2xl font-bold">{{ 'manage_index_heading'|trans }}</h2>
+                <p class="mt-2 text-sm">{{ 'manage_index_desc'|trans }}</p>
+            </a>
+        </div>
+
+        <!-- App Info Card -->
+        <div class="bg-white text-gray-800 rounded-lg shadow-lg mt-12 p-8">
+            <h2 class="text-2xl font-bold mb-4">{{ 'application_info'|trans }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p><strong>{{ 'server_name'|trans }}:</strong> {{ appInfo.serverName }}</p>
+                    <p><strong>{{ 'php_version'|trans }}:</strong> {{ appInfo.phpVersion }}</p>
+                    <p><strong>{{ 'db_version'|trans }}:</strong> {{ appInfo.dbVersion }}</p>
+                    <p><strong>{{ 'db_name'|trans }}:</strong> {{ appInfo.dbName }}</p>
+                </div>
+                <div>
+                    <p><strong>{{ 'symfony_version'|trans }}:</strong> {{ appInfo.symfonyVersion }}</p>
+                    <p><strong>{{ 'current_environment'|trans }}:</strong> {{ appInfo.environment }}</p>
+                    <p><strong>{{ 'last_commit'|trans }}:</strong> {{ appInfo.lastCommit }}</p>
+                    <p><strong>{{ 'app_version'|trans }}:</strong> {{ appInfo.appVersion }}</p>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <a href="#"
+                class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all">
+                    {{ 'manage_application'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

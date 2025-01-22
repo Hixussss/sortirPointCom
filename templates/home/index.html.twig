@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'home_title'|trans }}{% endblock %}
+
+{% block body %}
+
+<section id="home" class="relative overflow-hidden py-72 bg-no-repeat bg-cover" style="background-image: url('{{ asset('assets/images/bg2.jpg') }}')">
+
+    <div class="absolute inset-0 bg-center bg-cover bg-black/80"></div>
+
+    <div class="container relative">
+        <div class="text-center">
+            <div class="flex justify-center mt-6 mb-10">
+                <div>
+                    <span class="inline-block text-lg border-x-2 border-x-primary text-primary font-semibold px-2 rounded-full bg-primary/20 mb-2 dark:bg-primary/40">
+                        {{ 'developer_mode_label'|trans }}
+                    </span>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        {{ 'current_branch_label'|trans }}: <span class="font-semibold text-primary">{{ branch }}</span>
+                    </p>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 dark:text-gray-100">
+                        {{ 'home_heading'|trans }}<br>
+                        {{ 'home_subheading'|trans }}
+                        <span class="typewrite capitalize relative text-primary underline dark:text-primary-light" 
+                              data-period="3000" 
+                              data-type='{{ "home_tagline_dynamic_texts"|trans }}'>
+                            <span class="wrap"></span>
+                        </span>
+                    </h1>
+                    <p class="text-sm sm:text-base md:text-lg font-medium text-gray-100 max-w-sm md:max-w-xl mx-auto dark:text-gray-400">
+                        {{ 'home_description'|trans }}
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <a href="{{ path('app_event_list') }}" class="inline-flex items-center justify-center px-6 py-2 font-semibold backdrop-blur-2xl bg-white text-black rounded-lg transition-all duration-500 dark:bg-gray-800 dark:text-white">
+                    {{ 'view_events_button'|trans }} <i class="uil uil-eye text-xl ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Ideas Section -->
+<section id="event-ideas" class="py-16 bg-gray-100 dark:bg-gray-900 relative">
+    <!-- Background -->
+    <div class="absolute inset-0" style="background-image: url('{{ asset(seasonBackground) }}'); background-size: cover; background-position: center; opacity: 0.3;"></div>
+    <div class="container relative z-10">
+        <!-- Title and Description -->
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100" data-aos="fade-up">
+                {{ translations['event_ideas_title']|trans }}
+            </h2>
+            <p class="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                {{ seasonDescription|trans }}
+            </p>
+        </div>
+        
+        <!-- Event Ideas Grid -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for idea in seasonIdeas %}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <img src="{{ asset(idea.imageUrl) }}" alt="{{ idea.title }}" class="rounded-t-lg mb-4 w-full h-32 object-cover">
+                    <h3 class="text-lg font-bold text-primary mb-2">{{ idea.title }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ idea.description|trans }}</p>
+                </div>
+            {% else %}
+                <div class="text-center col-span-full" data-aos="fade-up">
+                    <p class="text-gray-500 dark:text-gray-300">
+                        {{ translations['event_ideas_no_ideas']|trans }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Christmas Tree Section -->
+<section id="christmas-tree" class="py-16 dark:bg-gray-800 relative">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-sugar-cane-pattern opacity-70"></div>
+
+    <div class="container text-center relative z-10">
+        <!-- Christmas Greeting -->
+        <h2 class="text-4xl font-bold text-red-500 dark:text-red-400 mb-6" style="font-family: 'Great Vibes', cursive;">
+            {{ 'christmas_greeting_title'|trans }}
+        </h2>
+
+        <!-- Christmas Tree GIF -->
+        <div class="flex justify-center mb-6">
+            <img src="https://i.pinimg.com/originals/59/d8/b8/59d8b8aa1e4730974722556a03403d72.gif" 
+                 alt="{{ 'christmas_tree_alt'|trans }}" 
+                 class="rounded-lg shadow-lg">
+        </div>
+
+        <!-- Christmas Footer -->
+        <p class="text-2xl bg-sugar-cane-text text-transparent bg-clip-text font-bold">
+            {{ 'christmas_greeting_message'|trans }}
+        </p>
+    </div>
+</section>
+
+
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Background pattern for the section */
+    .bg-sugar-cane-pattern {
+        background-image: url('https://i.pinimg.com/originals/6a/56/58/6a5658d28760b8dc2eb9ad77f5b6cf73.jpg'); /* Sucre d'orge motif */
+        background-size: 100px 100px;
+        background-repeat: repeat;
+    }
+
+    /* Text with sugar cane texture */
+    .bg-sugar-cane-text {
+        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20240104/pngtree-seamless-christmas-texture-with-candy-cane-stripes-image_13881964.png'); /* Sucre d'orge motif */
+        background-size: 100px 100px;
+        background-repeat: repeat;
+    }
+
+    /* Festive Greeting Style */
+    h2 {
+        font-family: 'Great Vibes', cursive;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        h2 {
+            font-size: 2.5rem;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init();
+    });
+</script>
+{% endblock %}

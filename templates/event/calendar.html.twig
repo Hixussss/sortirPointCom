@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'calendar_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-12 mt-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ 'calendar_heading'|trans }}</h1>
+            <div id="calendar"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM fully loaded and parsed.');
+
+        const calendarEl = document.getElementById('calendar');
+        console.log('Calendar element:', calendarEl);
+
+        if (calendarEl) {
+            console.log('Initializing FullCalendar...');
+
+            try {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    events: '/api/calendar/events', // Récupère les événements via votre endpoint Symfony
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    },
+                    eventClick: function (info) {
+                        console.log('Event clicked:', info.event);
+                        if (info.event.url) {
+                            console.log('Redirecting to:', info.event.url);
+                            window.location.href = info.event.url;
+                        } else {
+                            console.warn('Event does not have a URL:', info.event);
+                        }
+                    },
+                });
+
+                console.log('Rendering calendar...');
+                calendar.render();
+                console.log('Calendar rendered successfully.');
+            } catch (error) {
+                console.error('Error initializing FullCalendar:', error);
+            }
+        } else {
+            console.error('Calendar element not found in the DOM.');
+        }
+    });
+    </script>
+{% endblock %}

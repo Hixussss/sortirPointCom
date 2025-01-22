@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'preview_users_title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container mx-auto mt-10">
+    <h1 class="text-2xl font-bold mb-6">{{ 'preview_users_heading'|trans }}</h1>
+    <p class="mb-4">{{ 'preview_users_description'|trans }}</p>
+
+    <table class="min-w-full border-collapse border border-gray-300">
+        <thead>
+            <tr>
+                {% for header in previewData[0]|keys %}
+                    <th class="border border-gray-300 px-4 py-2 bg-gray-200">{{ header }}</th>
+                {% endfor %}
+                <th class="border border-gray-300 px-4 py-2 bg-gray-200">{{ 'issues'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in previewData %}
+                <tr class="{% if row.issues|length > 0 %}bg-red-100{% endif %}">
+                    {% for cell in row %}
+                        <td class="border border-gray-300 px-4 py-2">
+                            {% if cell is iterable %}
+                                {{ cell|join(', ') }} {# Concatène les éléments d'un tableau avec une virgule #}
+                            {% else %}
+                                {{ cell }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="border border-gray-300 px-4 py-2 text-red-600">
+                        {% if row.issues|length > 0 %}
+                            <ul>
+                                {% for issue in row.issues %}
+                                    <li>{{ issue }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            {{ 'no_issues'|trans }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="post" action="{{ path('admin_confirm_import') }}">
+        <div class="flex items-center mt-6">
+            <div class="mr-4">
+                <input type="checkbox" name="send_emails" id="send_emails" class="form-checkbox text-blue-600">
+                <label for="send_emails" class="ml-2 text-gray-700">{{ 'send_emails_option'|trans }}</label>
+            </div>
+            <button class="bg-green-500 text-white px-4 py-2 rounded shadow mr-4 hover:bg-green-600">
+                {{ 'confirm_import_button'|trans }}
+            </button>
+            <a href="{{ path('admin_import_users') }}" class="bg-gray-500 text-white px-4 py-2 rounded shadow hover:bg-gray-600">
+                {{ 'cancel_button'|trans }}
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

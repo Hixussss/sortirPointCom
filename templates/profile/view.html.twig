@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.username }}'s {{ 'profile_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-16 mt-16 bg-gray-50">
+    <div class="container mx-auto max-w-4xl">
+        {% if app.user and app.user.admin %}
+            <a href="{{ path('admin_users') }}"
+               class="flex items-center text-primary font-medium underline hover:text-primary/80 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                {{ 'back_to_users_list'|trans }}
+            </a>
+        {% endif %}
+        <!-- Profile Card -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <!-- Header Section -->
+            <div class="p-8 text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                <img 
+                    src="{{ user.profilePicture ? asset(user.profilePicture) : asset('assets/images/defaut-profil.png') }}" 
+                    alt="{{ 'profile_picture_alt'|trans }}" 
+                    class="w-40 h-40 rounded-full border-4 border-white shadow-md mx-auto">
+                <h1 class="text-3xl font-bold mt-4">{{ user.username }}</h1>
+                <p class="text-sm mt-1">{{ user.email }}</p>
+            </div>
+
+            <!-- Details Section -->
+            <div class="p-8 grid md:grid-cols-2 gap-8">
+                <!-- Personal Information -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ 'personal_information_title'|trans }}</h2>
+                    <ul class="space-y-3">
+                        <li>
+                            <span class="font-medium text-gray-600">{{ 'first_name_label'|trans }}:</span>
+                            <span class="text-gray-800">{{ user.firstName | default('not_provided'|trans) }}</span>
+                        </li>
+                        <li>
+                            <span class="font-medium text-gray-600">{{ 'last_name_label'|trans }}:</span>
+                            <span class="text-gray-800">{{ user.lastName | default('not_provided'|trans) }}</span>
+                        </li>
+                        <li>
+                            <span class="font-medium text-gray-600">{{ 'phone_label'|trans }}:</span>
+                            <span class="text-gray-800">{{ user.phone | default('not_provided'|trans) }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Additional Information -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ 'additional_information_title'|trans }}</h2>
+                    <ul class="space-y-3">
+                        <li>
+                            <span class="font-medium text-gray-600">{{ 'site_label'|trans }}:</span>
+                            <span class="text-gray-800">{{ user.site | default('not_provided'|trans) }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Follow/Unfollow Buttons and Admin Actions -->
+            <div class="p-6 bg-gray-100 flex justify-center">
+                <div class="bg-gray-100 p-4 rounded-lg flex space-x-4 justify-center">
+                    <!-- Follow/Unfollow Buttons -->
+                    {% if app.user and app.user != user %}
+                        {% if app.user.following.contains(user) %}
+                            <form action="{{ path('user_unfollow', {id: user.id}) }}" method="POST">
+                                <button type="submit"
+                                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                    {{ 'unfollow_button'|trans }}
+                                </button>
+                            </form>
+                        {% else %}
+                            <form action="{{ path('user_follow', {id: user.id}) }}" method="POST">
+                                <button type="submit"
+                                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                    {{ 'follow_button'|trans }}
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <!-- Admin Actions -->
+                    {% if app.user and app.user.admin %}
+
+                            <a href="{{ path('admin_user_delete', {'id': user.id}) }}"
+                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                {{ 'delete_button'|trans }}
+                            </a>
+                            {% if user.isActive %}
+                                <a href="{{ path('admin_user_desactivate', {'id': user.id}) }}"
+                                class="px-4 py-2 bg-neutral-500 text-white rounded-lg hover:bg-neutral-600">
+                                    {{ 'deactivate_button'|trans }}
+                                </a>
+                            {% else %}
+                                <a href="{{ path('admin_user_activate', {'id': user.id}) }}"
+                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                                    {{ 'activate_button'|trans }}
+                                </a>
+                            {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

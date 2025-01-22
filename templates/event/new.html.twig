@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'create_event_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-12 mt-8">
+    <div class="container mx-auto max-w-4xl">
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ 'create_event_heading'|trans }}</h1>
+            {{ form_start(eventForm, { 'attr': { 'class': 'space-y-6' } }) }}
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Name -->
+                    <div>
+                        {{ form_label(eventForm.name) }}
+                        {{ form_widget(eventForm.name) }}
+                    </div>
+
+                    <!-- Registration End Date -->
+                    <div>
+                        {{ form_label(eventForm.registrationEndDate) }}
+                        {% if errors|length %}
+                            <div class="text-red-500 font-bold">
+                                {{ form_errors(eventForm.registrationEndDate) }}
+                            </div>
+                        {% endif %}
+                        {{ form_widget(eventForm.registrationEndDate) }}
+                    </div>
+
+                    <!-- Max Registrations -->
+                    {{ form_row(eventForm.maxRegistrations) }}
+
+                    <!-- Dates and Duration -->
+                    <div>
+                        {{ form_label(eventForm.startDate) }}
+                        {% if errors|length %}
+                            <div class="text-red-500 font-bold">
+                                {{ form_errors(eventForm.startDate) }}
+                            </div>
+                        {% endif %}
+                        {{ form_widget(eventForm.startDate) }}
+                    </div>
+
+                    {{ form_row(eventForm.duration) }}
+
+                    <!-- Description -->
+                    {{ form_row(eventForm.description) }}
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-700 font-semibold">{{ 'form.location'|trans }}</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="useNewLocationSwitch" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-blue-600"></div>
+                            <span class="ml-3 text-sm font-medium text-gray-700">{{ 'create_new_location_switch'|trans }}</span>
+                        </label>
+                    </div>
+
+                    <div id="existingLocation">
+                        {{ form_row(eventForm.location, { 
+                            'label': 'form.location'|trans, 
+                            'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } 
+                        }) }}
+                    </div>
+
+                    <div id="newLocation" class="hidden">
+                        <h2 class="text-lg font-semibold text-gray-700">{{ 'form.location_name'|trans }}</h2>
+                        {{ form_row(eventForm.newLocation.name, { 
+                            'label': 'form.location_name'|trans, 
+                            'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } 
+                        }) }}
+                        {{ form_row(eventForm.newLocation.street, { 
+                            'label': 'form.street'|trans, 
+                            'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } 
+                        }) }}
+                        <div class="grid grid-cols-2 gap-4">
+                            {{ form_row(eventForm.newLocation.latitude, { 
+                                'label': 'form.latitude'|trans, 
+                                'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } 
+                            }) }}
+                            {{ form_row(eventForm.newLocation.longitude, { 
+                                'label': 'form.longitude'|trans, 
+                                'attr': { 'class': 'p-3 border border-gray-300 rounded-lg w-full' } 
+                            }) }}
+                        </div>
+                    </div>
+
+                    <h2 class="text-lg font-semibold text-gray-700 mt-6">{{ 'set_event_location'|trans }}</h2>
+                    <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
+
+                    <div>
+                        <span class="mt-1">
+                          {{ form_label(eventForm.takePartIn)}}
+                        </span>
+                        {{ form_widget(eventForm.takePartIn) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-between mt-6">
+                <a href="{{ path('app_event_list') }}" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                    {{ 'buttons.cancel'|trans }}
+                </a>
+                <button type="submit" class="px-6 py-2 text-white rounded-lg hover:bg-blue-600" style="background-color:cornflowerblue">
+                    {{ 'buttons.create'|trans }}
+                </button>
+            </div>
+
+            {{ form_end(eventForm) }}
+        </div>
+    </div>
+</section>
+
+<script>
+    const switchToggle = document.getElementById('useNewLocationSwitch');
+    const existingLocation = document.getElementById('existingLocation');
+    const newLocation = document.getElementById('newLocation');
+
+    switchToggle.addEventListener('change', (event) => {
+        if (event.target.checked) {
+            existingLocation.classList.add('hidden');
+            newLocation.classList.remove('hidden');
+        } else {
+            existingLocation.classList.remove('hidden');
+            newLocation.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const map = L.map('map').setView([48.8566, 2.3522], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker;
+        map.on('click', async function (e) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+
+            document.querySelector('#event_form_newLocation_latitude').value = e.latlng.lat;
+            document.querySelector('#event_form_newLocation_longitude').value = e.latlng.lng;
+
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`);
+                const data = await response.json();
+
+                if (data && data.address) {
+                    document.querySelector('#event_form_newLocation_street').value = data.address.road || 'Unknown Street';
+                } else {
+                    console.warn('Aucune adresse trouvée pour l\'emplacement sélectionné.');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération de l\'adresse:', error);
+            }
+        });
+    });
+</script>
+{% endblock %}

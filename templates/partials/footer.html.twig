@@ -1,0 +1,21 @@
+<footer class="bg-slate-900">
+    <div class="border-t border-slate-700/20 h-[75px]">
+        <div class="container flex flex-wrap justify-center items-center h-full text-center space-x-4">
+            <p class="text-base font-medium text-gray-400">
+                &copy; {{ "now"|date("Y") }} - <a href="#">{{ 'footer_copyright'|trans }}</a>
+            </p>
+            <!-- A propos -->
+            <a href="{{ path('app_about') }}" class="text-base font-medium text-gray-400 hover:text-gray-200 transition-all">
+                {{ 'footer_about'|trans }}
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="https://gitlab.com/lenaicb22/sortirPointCom" class="h-10 w-10 inline-flex items-center justify-center bg-slate-800 rounded-lg">
+                    <i data-lucide="github" class="h-5 w-5 text-gray-400"></i>
+                </a>
+                <a href="https://fr.linkedin.com/in/l%C3%A9na%C3%AFc-barbier-6278b5236" class="h-10 w-10 inline-flex items-center justify-center bg-slate-800 rounded-lg">
+                    <i data-lucide="linkedin" class="h-5 w-5 text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>

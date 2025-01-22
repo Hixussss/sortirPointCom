@@ -1,0 +1,27 @@
+{
+  "devDependencies": {
+    "@symfony/webpack-encore": "^5.0.1",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "postcss": "^8.4.49",
+    "postcss-loader": "^8.1.1",
+    "tailwindcss": "^3.4.15"
+  },
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production",
+    "launch": "concurrently \"npm:server\" \"npm:worker\" \"npm:watch\" \"start event-worker-loop.bat\" \"npm:chat\"",
+    "server": "symfony server:start --no-tls --listen-ip=0.0.0.0",
+    "worker": "start cmd.exe /k \"php bin/console messenger:consume async -vv --memory-limit=128M\"",
+    "chat": "start cmd.exe /k \"cd websocket-server && node server.js\""
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@tailwindcss/forms": "^0.5.9",
+    "preline": "^2.5.1"
+  }
+}

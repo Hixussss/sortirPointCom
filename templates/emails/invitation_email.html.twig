@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Email</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.firstName }} {{ user.lastName }}!</h1>
+    <p>You have been invited to join our platform.</p>
+    <p>Click the link below to set your password and activate your account:</p>
+    <a href="{{ resetUrl }}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Set Your Password</a>
+    <p>Best regards,<br>The Team</p>
+</body>
+</html>

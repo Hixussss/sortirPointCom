@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'about_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="py-16 mt-24">
+    <div class="container mx-auto max-w-5xl">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">{{ 'about_heading'|trans }}</h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+                {{ 'about_subheading'|trans({'%app_name%': 'SortirPointCom'}) }}
+            </p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+                <div class="text-blue-500 mb-4">
+                    <i class="uil uil-calendar-alt text-5xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ 'about_feature_discover_events_title'|trans }}</h3>
+                <p class="text-gray-600">{{ 'about_feature_discover_events_description'|trans }}</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+                <div class="text-blue-500 mb-4">
+                    <i class="uil uil-users-alt text-5xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ 'about_feature_connect_people_title'|trans }}</h3>
+                <p class="text-gray-600">{{ 'about_feature_connect_people_description'|trans }}</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+                <div class="text-blue-500 mb-4">
+                    <i class="uil uil-map-marker text-5xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ 'about_feature_explore_places_title'|trans }}</h3>
+                <p class="text-gray-600">{{ 'about_feature_explore_places_description'|trans }}</p>
+            </div>
+        </div>
+
+        <!-- Our Mission Section -->
+        <div class="bg-blue-50 shadow-md rounded-lg p-8 mt-16">
+            <div class="grid md:grid-cols-2 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-600 mb-4">{{ 'about_mission_title'|trans }}</h2>
+                    <p class="text-gray-600">{{ 'about_mission_description'|trans({'%app_name%': 'SortirPointCom'}) }}</p>
+                </div>
+                <div class="text-center">
+                    <img src="{{ asset('assets/images/auth-img.avif') }}" alt="{{ 'about_mission_image_alt'|trans }}" class="w-64 mx-auto">
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Section -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">{{ 'about_staff_heading'|trans }}</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for admin in admins %}
+                    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+                        <img 
+                            src="{{ admin.profilePicture ? asset(admin.profilePicture) : asset('assets/images/defaut-profil.png') }}" 
+                            alt="{{ 'about_staff_avatar_alt'|trans }}" 
+                            class="w-24 h-24 rounded-full mx-auto mb-4 shadow-lg">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ admin.username }}</h3>
+                        <span class="inline-block bg-blue-600 text-white text-sm font-semibold rounded-full px-4 py-1">{{ 'admin_role'|trans }}</span>
+                    </div>
+                {% else %}
+                    <p class="text-gray-500 text-center col-span-full">{{ 'about_no_staff_found'|trans }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-16 text-center">
+            <a href="{{ path('app_event_list') }}" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all">
+                {{ 'about_cta_explore_events'|trans }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

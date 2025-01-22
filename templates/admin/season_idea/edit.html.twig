@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ form.vars.value ? 'Edit Season Idea' : 'Add Season Idea' }}{% endblock %}
+
+{% block body %}
+<section class="py-12 bg-gray-100 dark:bg-gray-900 mt-16">
+    <div class="container mx-auto max-w-3xl">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                {{ form.vars.value ? 'Edit Season Idea' : 'Add Season Idea' }}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-300">
+                Fill out the form below to {{ form.vars.value ? 'update' : 'create' }} a season idea.
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+            {{ form_start(form, { 'attr': { 'class': 'space-y-6' } }) }}
+                <div>
+                    {{ form_label(form.season, 'Season', { 'label_attr': { 'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300' } }) }}
+                    {{ form_widget(form.season, { 'attr': { 'class': 'mt-1 p-3 border border-gray-300 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600' } }) }}
+                    {{ form_errors(form.season, { 'attr': { 'class': 'text-red-600 text-sm mt-1' } }) }}
+                </div>
+                <div>
+                    {{ form_label(form.title, 'Title', { 'label_attr': { 'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300' } }) }}
+                    {{ form_widget(form.title, { 'attr': { 'class': 'mt-1 p-3 border border-gray-300 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600' } }) }}
+                    {{ form_errors(form.title, { 'attr': { 'class': 'text-red-600 text-sm mt-1' } }) }}
+                </div>
+                <div>
+                    {{ form_label(form.description, 'Description', { 'label_attr': { 'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300' } }) }}
+                    {{ form_widget(form.description, { 'attr': { 'class': 'mt-1 p-3 border border-gray-300 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600' } }) }}
+                    {{ form_errors(form.description, { 'attr': { 'class': 'text-red-600 text-sm mt-1' } }) }}
+                </div>
+                <div>
+                    {{ form_label(form.imageUrl, 'Image URL', { 'label_attr': { 'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300' } }) }}
+                    {{ form_widget(form.imageUrl, { 'attr': { 'class': 'mt-1 p-3 border border-gray-300 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600' } }) }}
+                    {{ form_errors(form.imageUrl, { 'attr': { 'class': 'text-red-600 text-sm mt-1' } }) }}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-between items-center mt-6">
+                    <a href="{{ path('admin_season_ideas_index') }}" 
+                       class="px-6 py-2 bg-gray-500 text-white text-sm font-bold rounded-lg shadow-md hover:bg-gray-600 transition-all">
+                        Back to list
+                    </a>
+                    <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                        {{ form.vars.value ? 'Update' : 'Create' }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+{% endblock %}
