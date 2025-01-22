@@ -28,6 +28,8 @@ security:
             logout:
                 path: app_logout
             user_checker : App\Security\UserChecker
+            stateless: false
+            entry_point: lexik_jwt_authentication.security.jwt_authenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
