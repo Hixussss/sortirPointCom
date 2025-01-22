@@ -19,16 +19,16 @@ security:
                 check_path: /api/auth/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        # main:
-        #     lazy: true
-        #     provider: app_user_provider
-        #     form_login:
-        #         login_path: app_login
-        #         check_path: app_login
-        #     logout:
-        #         path: app_logout
-        #     user_checker : App\Security\UserChecker
-        #     stateless: true
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+            logout:
+                path: app_logout
+            user_checker : App\Security\UserChecker
+            stateless: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
