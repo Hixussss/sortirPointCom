@@ -638,10 +638,6 @@ class EventController extends AbstractController
     {
         $user = $this->getUser();
     
-        if (!$user instanceof UserInterface) {
-            return $this->json(['error' => 'Invalid token or unauthorized access'], 401);
-        }
-    
         $events = $eventRepository->findAll();
     
         $data = array_map(function ($event) {
