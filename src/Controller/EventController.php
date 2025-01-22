@@ -634,33 +634,23 @@ class EventController extends AbstractController
     }
 
     /**
-     * Route API pour récupérer les évènements.
+     * Route API pour récupérer les événements.
      */
-    #[Route('/api/events', name: 'api_events', methods: ['POST'])]
-    public function login(
-        Request $request, 
-        JWTTokenManagerInterface $jwtManager, 
-        EventRepository $eventRepository): JsonResponse
+    #[Route('/api/events', name: 'api_events', methods: ['GET'])]
+    public function getEvents(EventRepository $eventRepository): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-
-        /* // Vérifier si l'email et le mot de passe sont fournis
-        if (!isset($data['email'], $data['password'])) {
-            return $this->json(['error' => 'Missing email or password'], 400);
-        } */
-
-        // Authentification via le fournisseur de sécurité (automatique)
+        // Vérifier si l'utilisateur est authentifié
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
-            return $this->json(['error' => 'Invalid credentials'], 401);
+            return $this->json(['error' => 'Invalid token or unauthorized access'], 401);
         }
 
-        // Générer le token JWT
-        $token = $jwtManager->create($user);
+        // Récupérer les événements depuis le repository
+        $events = $eventRepository->findAll();
 
         return $this->json([
-            'token' => $token,
-            'events' => $eventRepository->findAll()
+            'user' => $user->getUsername(), // Exemple pour inclure des infos sur l'utilisateur
+            'events' => $events,
         ]);
     }
 }
