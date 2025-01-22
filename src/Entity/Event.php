@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -15,10 +16,12 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['event_list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 60)]
     #[Assert\NotBlank(message: "L'évènement doit avoir un nom.")]
+    #[Groups(['event_list'])]
     private ?string $name = null;
 
     #[ORM\Column(type: 'datetime')]
@@ -26,11 +29,13 @@ class Event
     #[Assert\GreaterThanOrEqual('now', message: "La date de début doit être une date future.")]
     #[Assert\GreaterThan(propertyPath: 'registrationEndDate',
         message: "La date de début est forcément ultérieure à la date de fermeture de l'inscription.")]
+    #[Groups(['event_list'])]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Range(notInRangeMessage: "L'évènement doit duré au minimum 30 minutes et au maximum 10 heures.",
         min: 30, max: 600)]
+    #[Groups(['event_list'])]
     private ?int $duration = null;
 
     #[ORM\Column(type: 'datetime')]
@@ -38,6 +43,7 @@ class Event
     #[Assert\GreaterThanOrEqual('now', groups: ['Default'], message: "La date de fermeture de l'inscription doit être une date future.")]
     #[Assert\LessThan(propertyPath: 'startDate',
         message: "La date de fermeture de l'inscription est forcément antérieure à la date de début de l'inscription.")]
+    #[Groups(['event_list'])]
     private ?\DateTimeInterface $registrationEndDate = null;
 
     #[ORM\Column]
@@ -45,31 +51,39 @@ class Event
     #[Assert\Positive(message: "Le nombre de participant maximum ne peut pas pas être négatif.")]
     #[Assert\Range(notInRangeMessage: "Le nombre de participant maximum ne peut dépassé 300 participants.",
         min: 1, max: 300)]
+    #[Groups(['event_list'])]
     private ?int $maxRegistrations = null;
 
     #[ORM\Column(length: 500, nullable: true)]
+    #[Groups(['event_list'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['event_list'])]
     private ?Location $location = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['event_list'])]
     private ?State $state = null;
 
     #[ORM\ManyToOne(inversedBy: 'organizedEvents')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['event_list'])]
     private ?User $organizer = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
+    #[Groups(['event_list'])]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['event_list'])]
     private ?Site $organizerSite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['event_list'])]
     private ?string $cancellationMotive = null;
 
     public function __construct()
