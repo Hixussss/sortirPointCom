@@ -632,4 +632,35 @@ class EventController extends AbstractController
             'link' => $this->generateUrl('app_event_show', ['id' => $event->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
+
+    /**
+     * Route API pour récupérer les évènements.
+     */
+    #[Route('/api/events', name: 'api_events', methods: ['POST'])]
+    public function login(
+        Request $request, 
+        JWTTokenManagerInterface $jwtManager, 
+        EventRepository $eventRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        /* // Vérifier si l'email et le mot de passe sont fournis
+        if (!isset($data['email'], $data['password'])) {
+            return $this->json(['error' => 'Missing email or password'], 400);
+        } */
+
+        // Authentification via le fournisseur de sécurité (automatique)
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            return $this->json(['error' => 'Invalid credentials'], 401);
+        }
+
+        // Générer le token JWT
+        $token = $jwtManager->create($user);
+
+        return $this->json([
+            'token' => $token,
+            'events' => $eventRepository->findAll();
+        ]);
+    }
 }
