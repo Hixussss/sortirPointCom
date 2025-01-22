@@ -660,7 +660,7 @@ class EventController extends AbstractController
 
         return $this->json([
             'token' => $token,
-            'events' => $eventRepository->findAll();
+            'events' => $eventRepository->findAll()
         ]);
     }
 }
