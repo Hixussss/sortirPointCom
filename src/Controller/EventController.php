@@ -638,14 +638,28 @@ class EventController extends AbstractController
     {
         $user = $this->getUser();
     
-        error_log('Utilisateur authentifié : ' . $user->getUsername());
+        if (!$user instanceof UserInterface) {
+            return $this->json(['error' => 'Invalid token or unauthorized access'], 401);
+        }
     
         $events = $eventRepository->findAll();
     
+        $data = array_map(function ($event) {
+            return [
+                'id' => $event->getId(),
+                'name' => $event->getName(),
+                'startDate' => $event->getStartDate()?->format('Y-m-d H:i:s'),
+                'duration' => $event->getDuration(),
+                'maxRegistrations' => $event->getMaxRegistrations(),
+                'location' => $event->getLocation()?->getName(),
+            ];
+        }, $events);
+    
         return $this->json([
             'user' => $user->getUsername(),
-            'events' => $events,
+            'events' => $data,
         ]);
     }
+    
     
 }
