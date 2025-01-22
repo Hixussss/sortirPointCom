@@ -45,6 +45,7 @@ security:
     access_control:
         # Autoriser l'accès à la page de connexion sans authentification
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
@@ -52,7 +53,6 @@ security:
         # Autoriser l'accès à la page d'accueil (index) sans authentification
         - { path: ^/$, roles: PUBLIC_ACCESS }
         # Bloquer tout le reste pour les utilisateurs non authentifiés
-        - { path: ^/api/, roles: [ROLE_USER, ROLE_ADMIN ] }
         - { path: ^/, roles: [ROLE_USER, ROLE_ADMIN ] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
