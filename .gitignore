@@ -61,3 +61,9 @@ docker-compose.override.yml
 /secrets/
 
 .env
+
+# Hostinger 
+.htaccess
+composerphp
+no
+satisfiable
