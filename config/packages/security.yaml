@@ -19,16 +19,16 @@ security:
                 check_path: /api/auth/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        main:
-            lazy: true
-            provider: app_user_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
-            logout:
-                path: app_logout
-            user_checker : App\Security\UserChecker
-            stateless: true
+        # main:
+        #     lazy: true
+        #     provider: app_user_provider
+        #     form_login:
+        #         login_path: app_login
+        #         check_path: app_login
+        #     logout:
+        #         path: app_logout
+        #     user_checker : App\Security\UserChecker
+        #     stateless: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -45,7 +45,6 @@ security:
     access_control:
         # Autoriser l'accès à la page de connexion sans authentification
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
@@ -54,6 +53,7 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }
         # Bloquer tout le reste pour les utilisateurs non authentifiés
         - { path: ^/, roles: [ROLE_USER, ROLE_ADMIN ] }
+        - { path: ^/api, roles: [ROLE_USER, ROLE_ADMIN ] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
