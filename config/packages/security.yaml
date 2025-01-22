@@ -12,6 +12,14 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        login:
+            pattern:  ^/api/auth/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /api/auth/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         main:
             lazy: true
             provider: app_user_provider
@@ -27,11 +35,16 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+        api:
+            pattern:   ^/api/
+            stateless: true
+            jwt: ~
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         # Autoriser l'accès à la page de connexion sans authentification
+        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
@@ -39,6 +52,7 @@ security:
         # Autoriser l'accès à la page d'accueil (index) sans authentification
         - { path: ^/$, roles: PUBLIC_ACCESS }
         # Bloquer tout le reste pour les utilisateurs non authentifiés
+        - { path: ^/api/, roles: [ROLE_USER, ROLE_ADMIN ] }
         - { path: ^/, roles: [ROLE_USER, ROLE_ADMIN ] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 

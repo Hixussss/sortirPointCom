@@ -67,3 +67,6 @@ docker-compose.override.yml
 composerphp
 no
 satisfiable
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
