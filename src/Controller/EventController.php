@@ -638,12 +638,6 @@ class EventController extends AbstractController
     {
         $user = $this->getUser();
     
-        if (!$user instanceof UserInterface) {
-            // Log pour vérifier si l'utilisateur est bien authentifié
-            error_log('Utilisateur non authentifié');
-            return $this->json(['error' => 'Invalid token or unauthorized access'], 401);
-        }
-    
         error_log('Utilisateur authentifié : ' . $user->getUsername());
     
         $events = $eventRepository->findAll();
