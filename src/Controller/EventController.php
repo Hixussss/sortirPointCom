@@ -651,7 +651,7 @@ class EventController extends AbstractController
             ];
         }, $events);
     
-        return $this->json([$data]);
+        return $this->json($data);
     }
     
     
