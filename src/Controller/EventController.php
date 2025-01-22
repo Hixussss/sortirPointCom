@@ -636,10 +636,11 @@ class EventController extends AbstractController
     /**
      * Route API pour récupérer les événements.
      */
-    #[Route('/api/events', name: 'api_events', methods: ['GET'])]
-    public function getEvents(EventRepository $eventRepository): JsonResponse
-    {
-        // Vérifier si l'utilisateur est authentifié
+    #[Route('/api/events', name: 'api_events', methods: ['POST'])]
+    public function getEvents(
+        EventRepository $eventRepository
+    ): JsonResponse {
+        // Authentification via le fournisseur de sécurité (automatique)
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             return $this->json(['error' => 'Invalid token or unauthorized access'], 401);
@@ -648,9 +649,11 @@ class EventController extends AbstractController
         // Récupérer les événements depuis le repository
         $events = $eventRepository->findAll();
 
+        // Retourner les événements avec des informations utilisateur
         return $this->json([
-            'user' => $user->getUsername(), // Exemple pour inclure des infos sur l'utilisateur
+            'user' => $user->getUsername(), // Facultatif : renvoyer des détails sur l'utilisateur
             'events' => $events,
         ]);
     }
+
 }
