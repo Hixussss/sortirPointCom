@@ -652,5 +652,25 @@ class EventController extends AbstractController
         return $this->json($data);
     }
 
+    #[Route('/api/user/events', name: 'api_user_events', methods: ['POST'])]
+    public function getUserEvents(EventRepository $eventRepository): JsonResponse
+    {
+        $user = $this->getUser();
     
+        $events = $eventRepository->findBy(['organizer' => $user]);
+    
+        $data = array_map(function ($event) {
+            return [
+                'id' => $event->getId(),
+                'name' => $event->getName(),
+                'startDate' => $event->getStartDate()?->format('Y-m-d H:i:s'),
+                'duration' => $event->getDuration(),
+                'maxRegistrations' => $event->getMaxRegistrations(),
+                'location' => $event->getLocation()?->getName(),
+            ];
+        }, $events);
+    
+        return $this->json($data);
+    }
+
 }
