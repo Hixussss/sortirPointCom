@@ -615,12 +615,20 @@ class EventController extends AbstractController
     public function getEvents(EventRepository $eventRepository): JsonResponse
     {
         $user = $this->getUser();
-    
         $events = $eventRepository->findAll();
-    
+        
         $data = array_map(function ($event) {
+            $latitude = $event->getLocation()?->getLatitude();
+            $longitude = $event->getLocation()?->getLongitude();
+            $staticMapUrl = null;
+    
+            if ($latitude !== null && $longitude !== null) {
+                // Calculer les coordonnées de la tuile
+                $tile = $this->getTileCoordinates($latitude, $longitude, 14);
+                $staticMapUrl = "https://tile.openstreetmap.org/14/{$tile['x']}/{$tile['y']}.png";
+            }
+    
             return [
-                //Image / Status + organisateur + nbr personne / maxRegistrations
                 'id' => $event->getId(),
                 'name' => $event->getName(),
                 'startDate' => $event->getStartDate()?->format('Y-m-d H:i:s'),
@@ -630,13 +638,12 @@ class EventController extends AbstractController
                 'organizer' => $event->getOrganizer()->getUsername(),
                 'participants' => $event->getParticipants()->count(),
                 'status' => $event->getState()->getLabel(),
-                'image' => $event->getImage(),
+                'staticMapUrl' => $staticMapUrl, // Ajouter l'URL de l'image statique
             ];
         }, $events);
     
         return $this->json($data);
     }
-    
 
     #[Route('/api/events/{id}', name: 'api_event_details', methods: ['POST'])]
     public function getEventDetails(int $id, EventRepository $eventRepository): JsonResponse
