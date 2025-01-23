@@ -28,7 +28,7 @@
             try {
                 const calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
-                    events: '/api/calendar/events', // Récupère les événements via votre endpoint Symfony
+                    events: '/calendar/events', // Récupère les événements via votre endpoint Symfony
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
