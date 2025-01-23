@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const calendar = new Calendar(calendarEl, {
             plugins: [dayGridPlugin, interactionPlugin],
             initialView: 'dayGridMonth',
-            events: '/api/calendar/events',
+            events: '/calendar/events',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',

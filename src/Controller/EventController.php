@@ -565,12 +565,12 @@ class EventController extends AbstractController
     /**
      * Récupère les événements à venir et les formate pour l'affichage dans un calendrier.
      *
-     * @Route("/api/calendar/events", name="api_calendar_events", methods={"GET"})
+     * @Route("/calendar/events", name="api_calendar_events", methods={"GET"})
      *
      * @param EventRepository $eventRepository Le dépôt des événements.
      * @return JsonResponse La réponse JSON contenant les événements formatés.
      */
-    #[Route('/api/calendar/events', name: 'api_calendar_events', methods: ['GET'])]
+    #[Route('/calendar/events', name: 'api_calendar_events', methods: ['GET'])]
     public function getCalendarEvents(EventRepository $eventRepository): JsonResponse
     {
         $events = $eventRepository->findUpcomingEvents();
@@ -616,6 +616,7 @@ class EventController extends AbstractController
     
         $data = array_map(function ($event) {
             return [
+                //Image / Status + organisateur + nbr personne / maxRegistrations
                 'id' => $event->getId(),
                 'name' => $event->getName(),
                 'startDate' => $event->getStartDate()?->format('Y-m-d H:i:s'),
