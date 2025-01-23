@@ -646,6 +646,8 @@ class EventController extends AbstractController
             'maxRegistrations' => $event->getMaxRegistrations(),
             'description' => $event->getDescription(),
             'location' => $event->getLocation()?->getName(),
+            'location_x' => $event->getLocation()?->getLatitude(),
+            'location_y' => $event->getLocation()?->getLongitude(),
             'organizer' => $event->getOrganizer()->getUsername(),
         ];
 
