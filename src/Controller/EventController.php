@@ -607,32 +607,6 @@ class EventController extends AbstractController
         return $this->render('event/calendar.html.twig');
     }
 
-    /**
-     * Récupère les détails d'un événement spécifique.
-     *
-     * @Route("/api/event-details/{id}", name="api_event_details", requirements={"id"="\d+"}, methods={"GET"})
-     *
-     * @param int $id L'identifiant de l'événement.
-     * @param EventRepository $eventRepository Le dépôt des événements.
-     * @return JsonResponse La réponse JSON contenant les détails de l'événement ou un message d'erreur si l'événement n'est pas trouvé.
-     */
-    #[Route('/api/event-details/{id}', name: 'api_event_details', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function getEventDetails(int $id, EventRepository $eventRepository): JsonResponse
-    {
-        $event = $eventRepository->find($id);
-
-        if (!$event) {
-            return new JsonResponse(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        return new JsonResponse([
-            'id' => $event->getId(),
-            'title' => $event->getName(),
-            'description' => substr($event->getDescription(), 0, 100), // Extrait limité
-            'link' => $this->generateUrl('app_event_show', ['id' => $event->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
-        ]);
-    }
-
     #[Route('/api/events', name: 'api_events', methods: ['POST'])]
     public function getEvents(EventRepository $eventRepository): JsonResponse
     {
@@ -654,5 +628,29 @@ class EventController extends AbstractController
         return $this->json($data);
     }
     
+
+    #[Route('/api/events/{id}', name: 'api_event_details', methods: ['POST'])]
+    public function getEventDetails(int $id, EventRepository $eventRepository): JsonResponse
+    {
+        $event = $eventRepository->find($id);
+
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $data = [
+            'id' => $event->getId(),
+            'name' => $event->getName(),
+            'startDate' => $event->getStartDate()?->format('Y-m-d H:i:s'),
+            'duration' => $event->getDuration(),
+            'maxRegistrations' => $event->getMaxRegistrations(),
+            'description' => $event->getDescription(),
+            'location' => $event->getLocation()?->getName(),
+            'organizer' => $event->getOrganizer()->getUsername(),
+        ];
+
+        return $this->json($data);
+    }
+
     
 }

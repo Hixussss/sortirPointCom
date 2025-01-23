@@ -17,18 +17,20 @@ class SeasonIdeaType extends AbstractType
         $builder
             ->add('season', TextType::class, [
                 'label' => 'Season (e.g. Christmas, Summer)',
+                'required' => true,
             ])
             ->add('title', TextType::class, [
                 'label' => 'Title',
+                'required' => true,
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'required' => false,
+                'required' => true,
             ])
             ->add('imageUrl', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
             ]);
     }
 
