@@ -250,4 +250,34 @@ class HomeController extends AbstractController
             'link' => $this->generateUrl('app_profile', ['id' => $user->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
+
+    #[Route('/api/profile', name: 'api_user_profile', methods: ['POST'])]
+    public function getProfile(): JsonResponse
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->json(['error' => 'Unauthorized'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        // Préparer les données à retourner
+        $data = [
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'phone' => $user->getPhone(),
+            'isAdmin' => $user->isAdmin(),
+            'isActive' => $user->isActive(),
+            'profilePicture' => $user->getProfilePicture(),
+            'site' => $user->getSite()->getName(),
+            'followers' => count($user->getFollowers()),
+            'following' => count($user->getFollowing()),
+        ];
+
+        return $this->json($data);
+    }
+
 }
