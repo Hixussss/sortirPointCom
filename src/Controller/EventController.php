@@ -23,6 +23,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use App\Service\EventFilterService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -571,9 +572,11 @@ class EventController extends AbstractController
      * @return JsonResponse La réponse JSON contenant les événements formatés.
      */
     #[Route('/calendar/events', name: 'api_calendar_events', methods: ['GET'])]
-    public function getCalendarEvents(EventRepository $eventRepository): JsonResponse
+    public function getCalendarEvents(EventRepository $eventRepository, RequestStack $requestStack): JsonResponse
     {
         $events = $eventRepository->findUpcomingEvents();
+        $session = $requestStack->getSession();
+        $locale = $session->get('_locale', 'en');
     
         $calendarEvents = [];
         foreach ($events as $event) {
@@ -588,6 +591,7 @@ class EventController extends AbstractController
                 'start' => $startDate->format('Y-m-d\TH:i:s'),
                 'end' => $endDate->format('Y-m-d\TH:i:s'),
                 'url' => $this->generateUrl('app_event_show', ['id' => $event->getId()]),
+                'locale' => $locale,
             ];
         }
     
@@ -623,6 +627,10 @@ class EventController extends AbstractController
                 'duration' => $event->getDuration(),
                 'maxRegistrations' => $event->getMaxRegistrations(),
                 'location' => $event->getLocation()?->getName(),
+                'organizer' => $event->getOrganizer()->getUsername(),
+                'participants' => $event->getParticipants()->count(),
+                'status' => $event->getState()->getLabel(),
+                'image' => $event->getImage(),
             ];
         }, $events);
     
@@ -634,11 +642,23 @@ class EventController extends AbstractController
     public function getEventDetails(int $id, EventRepository $eventRepository): JsonResponse
     {
         $event = $eventRepository->find($id);
-
+    
         if (!$event) {
             return $this->json(['error' => 'Event not found'], JsonResponse::HTTP_NOT_FOUND);
         }
-
+    
+        // Vérifiez si l'événement a des coordonnées valides
+        $latitude = $event->getLocation()?->getLatitude();
+        $longitude = $event->getLocation()?->getLongitude();
+    
+        $staticMapUrl = null;
+    
+        if ($latitude !== null && $longitude !== null) {
+            // Calculer la tuile pour le niveau de zoom 14
+            $tile = $this->getTileCoordinates($latitude, $longitude, 14);
+            $staticMapUrl = "https://tile.openstreetmap.org/14/{$tile['x']}/{$tile['y']}.png";
+        }
+    
         $data = [
             'id' => $event->getId(),
             'name' => $event->getName(),
@@ -647,14 +667,15 @@ class EventController extends AbstractController
             'maxRegistrations' => $event->getMaxRegistrations(),
             'description' => $event->getDescription(),
             'location' => $event->getLocation()?->getName(),
-            'location_x' => $event->getLocation()?->getLatitude(),
-            'location_y' => $event->getLocation()?->getLongitude(),
+            'location_x' => $latitude,
+            'location_y' => $longitude,
             'organizer' => $event->getOrganizer()->getUsername(),
+            'staticMapUrl' => $staticMapUrl, // Ajouter l'URL de l'image statique
         ];
-
+    
         return $this->json($data);
     }
-
+    
     #[Route('/api/user/events', name: 'api_user_events', methods: ['POST'])]
     public function getUserEvents(EventRepository $eventRepository): JsonResponse
     {

@@ -17,37 +17,29 @@
     {{ parent() }}
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM fully loaded and parsed.');
 
         const calendarEl = document.getElementById('calendar');
-        console.log('Calendar element:', calendarEl);
 
         if (calendarEl) {
-            console.log('Initializing FullCalendar...');
-
             try {
                 const calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
-                    events: '/calendar/events', // Récupère les événements via votre endpoint Symfony
+                    events: '/calendar/events',
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay',
                     },
+                    locale: '{{ app.request.locale }}',
                     eventClick: function (info) {
-                        console.log('Event clicked:', info.event);
                         if (info.event.url) {
-                            console.log('Redirecting to:', info.event.url);
                             window.location.href = info.event.url;
                         } else {
                             console.warn('Event does not have a URL:', info.event);
                         }
                     },
                 });
-
-                console.log('Rendering calendar...');
                 calendar.render();
-                console.log('Calendar rendered successfully.');
             } catch (error) {
                 console.error('Error initializing FullCalendar:', error);
             }
