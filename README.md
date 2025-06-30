@@ -9,7 +9,7 @@ SortirPointCom est une application Symfony moderne et interactive permettant de 
 ### Contributeurs
 - **Lénaïc Barbier**  
   Développeur principal, en charge de l'architecture, des fonctionnalités principales et des interfaces utilisateur.  
-  [GitLab](https://gitlab.com/lenaicb22) | [LinkedIn](https://fr.linkedin.com/in/l%C3%A9na%C3%AFc-barbier-6278b5236)
+  [GitLab](https://gitlab.com/lenaicb22) |
 - **Florian HEUZE**  
   Développeur principal, en charge de l'architecture, des fonctionnalités principales et des interfaces utilisateur.  
   [GitLab](https://gitlab.com/flo2167) | [LinkedIn](https://fr.linkedin.com/in/florian-heuz%C3%A9)
